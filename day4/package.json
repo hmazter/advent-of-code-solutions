@@ -1,0 +1,7 @@
+{
+  "name": "advent-of-code-day4",
+  "version": "0.0.1",
+  "dependencies": {
+    "js-md5": "^0.3.0"
+  }
+}
