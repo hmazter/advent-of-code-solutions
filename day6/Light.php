@@ -9,7 +9,6 @@
 class Light
 {
     const OFF = 0;
-    const ON = 1;
 
     private $state;
 
@@ -27,22 +26,26 @@ class Light
         return ($this->state == self::ON);
     }
 
+    public function getBrightness()
+    {
+        return $this->state;
+    }
+
     public function turnOn()
     {
-        $this->state = self::ON;
+        $this->state++;
     }
 
     public function turnOff()
     {
-        $this->state = self::OFF;
+        $this->state--;
+        if ($this->state < 0) {
+            $this->state = 0;
+        }
     }
 
     public function toggle()
     {
-        if ($this->isOn()) {
-            $this->turnOff();
-        } else {
-            $this->turnOn();
-        }
+        $this->state += 2;
     }
 }

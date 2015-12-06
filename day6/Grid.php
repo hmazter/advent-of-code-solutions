@@ -5,9 +5,6 @@ class Grid
     private $size;
     private $grid;
 
-    /**
-     * Grid constructor.
-     */
     public function __construct($size)
     {
         $this->size = $size;
@@ -20,7 +17,7 @@ class Grid
         }
     }
 
-    public function count()
+    public function countLights()
     {
         $count = 0;
         for ($x = 0; $x < $this->size; $x++) {
@@ -33,6 +30,19 @@ class Grid
             }
         }
         return $count;
+    }
+
+    public function totalBrightness()
+    {
+        $total = 0;
+        for ($x = 0; $x < $this->size; $x++) {
+            for ($y = 0; $y < $this->size; $y++) {
+                /** @var Light $light */
+                $light = $this->grid[$x][$y];
+                $total += $light->getBrightness();
+            }
+        }
+        return $total;
     }
 
     public function turnOn($lowerX, $lowerY, $topX, $topY)

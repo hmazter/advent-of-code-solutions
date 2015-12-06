@@ -3,9 +3,6 @@ require_once(dirname(__FILE__) . '/Grid.php');
 require_once(dirname(__FILE__) . '/Light.php');
 
 $lines = file(dirname(__FILE__) . '/input.txt');
-/*$lines = [
-    'turn on 0,0 through 2,2'
-];*/
 
 $pattern = '/(\D*)(\s*)(\d+),(\d+)(\D*)(\d+),(\d+)/';
 
@@ -34,4 +31,4 @@ foreach ($lines as $line) {
     }
 }
 
-echo 'Lights on: ' . $grid->count() . "\n";
+echo 'Brightness: ' . $grid->totalBrightness() . "\n";
