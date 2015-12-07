@@ -1,81 +1,69 @@
 <?php
+require_once dirname(__FILE__) . '/helpers.php';
 
-//$lines = file(dirname(__FILE__) . '/input.txt');
-$lines = [
-    '123 -> x',
-    '456 -> y',
-    'x AND y -> d',
-    'x OR y -> e',
-    'x LSHIFT 2 -> f',
-    'y RSHIFT 2 -> g',
-    'NOT x -> h',
-    'NOT y -> i',
-];
-
-$variables = [];
+$wires = [];
+$queue = [];
+$lines = file(dirname(__FILE__) . '/input.txt');
 foreach ($lines as $line) {
+    $queue[] = trim($line);
+}
+
+// while there is still lines in the queue that needs processing
+while (count($queue) > 0) {
+    $line = array_shift($queue);
     list ($a, $op, $b, $out) = parseLine($line);
 
-    if (!isset($variables[$a]) && !is_numeric($a) && $a != null) {
-        $variables[$a] = 0;
-    }
-    if (!isset($variables[$b]) && !is_numeric($b) && $b != null) {
-        $variables[$b] = 0;
-    }
-
-    if ($op == 'AND') {
-        echo "$out = $a & $b\n";
-        $variables[$out] = $variables[$a] & $variables[$b];
-    } elseif ($op == 'OR') {
-        echo "$out = $a | $b\n";
-        $variables[$out] = $variables[$a] | $variables[$b];
-    } elseif ($op == 'LSHIFT') {
-        echo "$out = $a << $b\n";
-        $variables[$out] = $variables[$a] << $b;
-    } elseif ($op == 'RSHIFT') {
-        echo "$out = $a >> $b\n";
-        $variables[$out] = $variables[$a] >> $b;
-    } elseif ($op == 'NOT') {
-        echo "$out = ~ $variables[$a]\n";
-        $variables[$out] = ~$variables[$a];
-        $variables[$out] = $variables[$out] & 65535;
-    } elseif ($op == 'ASSIGN') {
-        echo "$out = $a\n";
-        if (is_numeric($a)) {
-            $variables[$out] = (int)$a;
-        } else {
-            $variables[$out] = $variables[$a];
+    if (in_array($op, ['AND', 'OR', 'LSHIFT', 'RSHIFT'])) {
+        $num = getNum($a);
+        if ($num === false) {
+            $queue[] = $line;
+            continue;
         }
+        $num2 = getNum($b);
+        if ($num2 === false) {
+            $queue[] = $line;
+            continue;
+        }
+
+        switch ($op) {
+            case 'AND':
+                $wires[$out] = $num & $num2;
+                break;
+
+            case 'OR':
+                $wires[$out] = $num | $num2;
+                break;
+
+            case 'LSHIFT':
+                $wires[$out] = $num << $num2;
+                break;
+
+            case 'RSHIFT':
+                $wires[$out] = $num >> $num2;
+                break;
+        }
+    } elseif ($op == 'NOT') {
+        $num = getNum($a);
+        if ($num === false) {
+            $queue[] = $line;
+            continue;
+        }
+
+        $wires[$out] = ~$num & 0xFFFF;
+    } elseif ($op == 'ASSIGN') {
+        $num = getNum($a);
+        if ($num === false) {
+            $queue[] = $line;
+            continue;
+        }
+
+        // part 2: override value of b from input file with result from wire a in part 1
+        if ($out == 'b') {
+            $num = 956;
+        }
+
+        $wires[$out] = $num;
     }
 }
 
-echo "\n\nResult:\n";
-ksort($variables);
-foreach ($variables as $variable => $value) {
-    echo "$variable: $value\n";
-}
-
-
-function parseLine($line)
-{
-    $pattern = '/(((\S+) ?)(\S*) ?)(\S*) -> (\S*)/';
-    preg_match($pattern, $line, $match);
-    if (empty($match[4]) && empty($match[5])) {
-        $a = $match[1];
-        $out = $match[6];
-        $b = null;
-        $op = 'ASSIGN';
-    } elseif (empty($match[5])) {
-        $op = $match[3];
-        $a = $match[4];
-        $out = $match[6];
-        $b = null;
-    } else {
-        $a = $match[3];
-        $op = $match[4];
-        $b = $match[5];
-        $out = $match[6];
-    }
-
-    return [$a, $op, $b, $out];
-}
+echo "wire a: " . $wires['a'] . "\n";
