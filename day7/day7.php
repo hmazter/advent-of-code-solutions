@@ -16,6 +16,13 @@ $variables = [];
 foreach ($lines as $line) {
     list ($a, $op, $b, $out) = parseLine($line);
 
+    if (!isset($variables[$a]) && !is_numeric($a) && $a != null) {
+        $variables[$a] = 0;
+    }
+    if (!isset($variables[$b]) && !is_numeric($b) && $b != null) {
+        $variables[$b] = 0;
+    }
+
     if ($op == 'AND') {
         echo "$out = $a & $b\n";
         $variables[$out] = $variables[$a] & $variables[$b];
@@ -29,7 +36,7 @@ foreach ($lines as $line) {
         echo "$out = $a >> $b\n";
         $variables[$out] = $variables[$a] >> $b;
     } elseif ($op == 'NOT') {
-        echo "$out = ~ $a\n";
+        echo "$out = ~ $variables[$a]\n";
         $variables[$out] = ~$variables[$a];
         $variables[$out] = $variables[$out] & 65535;
     } elseif ($op == 'ASSIGN') {
