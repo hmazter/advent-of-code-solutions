@@ -1,25 +1,21 @@
 <?php
 
-//$password = 'vzbxkghb';   // part 1 input
-$password = 'vzbxxyzz';     // part 1 solution => input part 2
+$password = 'vzbxkghb';   // part 1 input
+//$password = 'vzbxxyzz';     // part 1 solution => input part 2
 
 $threeLetterIncrease = generateThreeLetterIncrease();
-$allowedAlphabeth = [
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm',
-    'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x' ,'y', 'z',
-];
 
-while (true) {
-    $password = join('', increaseLetters(str_split($password)));
-
-    if (isValid($password)) {
-        break;
-    }
-}
+while (!isValid(++$password)) { }
 
 echo "password: $password\n";
 
 
+/**
+ * Generates an array of all tree letter increases; abc, bcd, ...
+ * Could be replace with a static array of these
+ *
+ * @return array
+ */
 function generateThreeLetterIncrease()
 {
     $alphabeth = [
@@ -34,23 +30,12 @@ function generateThreeLetterIncrease()
     return $result;
 }
 
-function increaseLetters($passwordArray)
-{
-    global $allowedAlphabeth;
-
-    $char = array_pop($passwordArray);
-    $index = array_search($char, $allowedAlphabeth) + 1;
-
-    if ($index >= count($allowedAlphabeth)) {
-        $index = 0;
-        $passwordArray = increaseLetters($passwordArray);
-    }
-    $passwordArray[] = $allowedAlphabeth[$index];
-
-    return $passwordArray;
-
-}
-
+/**
+ * Check if a password is valid
+ *
+ * @param string $password
+ * @return bool
+ */
 function isValid($password)
 {
     if (!containsThreeLetterIncrease($password)) {
@@ -64,6 +49,12 @@ function isValid($password)
     return true;
 }
 
+/**
+ * Check if a password contains the required tree letter increase, eg: 'abc', 'bcd' ...
+ *
+ * @param string $password
+ * @return bool
+ */
 function containsThreeLetterIncrease($password)
 {
     global $threeLetterIncrease;
@@ -77,6 +68,12 @@ function containsThreeLetterIncrease($password)
     return false;
 }
 
+/**
+ * Checks if a password contains two pars, eg: 'aa' and 'bb', or 'cc' ...
+ *
+ * @param $password
+ * @return bool
+ */
 function containsTwoPairs($password)
 {
     preg_match_all('/(\w)\1{1,}/', $password, $match);
