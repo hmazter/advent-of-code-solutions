@@ -46,6 +46,10 @@ function isValid($password)
         return false;
     }
 
+    if (containsInvalidChars($password)) {
+        return false;
+    }
+
     return true;
 }
 
@@ -82,4 +86,9 @@ function containsTwoPairs($password)
     }
 
     return false;
+}
+
+function containsInvalidChars($password)
+{
+    return preg_match('/[iol]/', $password) === 1;
 }
