@@ -3,7 +3,7 @@
 $lines = file(dirname(__FILE__) . '/input.txt', FILE_IGNORE_NEW_LINES);
 $totalAmount = 150;
 
-$permutations = powerSet($lines);
+$permutations = pc_array_power_set($lines);
 
 echo "Number of permutations: " . count($permutations) . PHP_EOL;
 
@@ -29,28 +29,21 @@ echo "combinations of containers that fits $totalAmount litres (part 1): $count\
 echo "combinations of containers of minimum numbers that fits $totalAmount litres (part 2): $smallestCount\n";
 
 /**
- * http://stackoverflow.com/a/6092999
+ * http://docstore.mik.ua/orelly/webprog/pcook/ch04_25.htm
  *
- * @param array $in
- * @param int $minLength
+ * @param array $elements
  * @return array
  */
-function powerSet($in, $minLength = 1)
+function pc_array_power_set($elements)
 {
-    $count = count($in);
-    $members = pow(2, $count);
-    $return = array();
-    for ($i = 0; $i < $members; $i++) {
-        $b = sprintf("%0" . $count . "b", $i);
-        $out = array();
-        for ($j = 0; $j < $count; $j++) {
-            if ($b{$j} == '1') {
-                $out[] = $in[$j];
-            }
-        }
-        if (count($out) >= $minLength) {
-            $return[] = $out;
+    // initialize by adding the empty set
+    $results = array(array());
+
+    foreach ($elements as $element) {
+        foreach ($results as $combination) {
+            $results[] = array_merge(array($element), $combination);
         }
     }
-    return $return;
+
+    return $results;
 }
