@@ -1,7 +1,6 @@
 <?php
 
 $target = 36000000;
-//$target = 10000;
 $presents = 0;
 $house = 1;
 while (true) {
@@ -10,13 +9,10 @@ while (true) {
     foreach ($divisors as $key => $divisor) {
         if ($divisor * 50 < $house) {
             unset($divisors[$key]);
-//            echo "elf $divisor has delivered to more then 50 houses\n";
         }
     }
 
     $presents = array_sum($divisors) * 11;
-
-//    echo "House $house got $presents presents.\n";
 
     if ($presents >= $target) {
         break;
