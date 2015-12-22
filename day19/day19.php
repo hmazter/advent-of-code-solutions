@@ -1,21 +1,11 @@
 <?php
 
-$lines = file(dirname(__FILE__) . '/input.txt', FILE_IGNORE_NEW_LINES);
-$readingReplacements = true;
+$lines = file(dirname(__FILE__) . '/input.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
+$medicineMolecule = array_pop($lines);
 $replacements = [];
-$medicineMolecule = '';
 foreach ($lines as $line) {
-    if ($line == '') {
-        $readingReplacements = false;
-        continue;
-    }
-
-    if ($readingReplacements) {
-        $replacements[] = explode(' => ', $line);
-    } else {
-        $medicineMolecule = trim($line);
-    }
+    $replacements[] = explode(' => ', $line);
 }
 
 $molecules = [];
