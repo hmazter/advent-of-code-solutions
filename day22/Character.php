@@ -5,9 +5,6 @@ abstract class Character
     protected $hitpoints = 0;
     protected $damage = 0;
     protected $armor = 0;
-    protected $activeSpells = [];
-
-    abstract function printInfo();
 
     /**
      * Character constructor.
@@ -18,36 +15,6 @@ abstract class Character
     {
         $this->hitpoints = $hitpoints;
         $this->damage = $damage;
-    }
-
-    public function addSpell(EffectSpell $spell)
-    {
-        $this->activeSpells[] = $spell;
-    }
-
-    public function isSpellActive(Spell $spell)
-    {
-        foreach ($this->activeSpells as $activeSpell) {
-            if (get_class($activeSpell) == get_class($spell)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function tickActiveSpells()
-    {
-//        echo "Tick spells for ".$this->getName().PHP_EOL;
-//        print_r($this->activeSpells);
-
-        /** @var EffectSpell $activeSpell */
-        foreach ($this->activeSpells as $key => $activeSpell) {
-            if (!$activeSpell->tick($this)) {
-                // timer is 0, remove from active list
-                unset($this->activeSpells[$key]);
-            }
-        }
     }
 
     public function isAlive()
