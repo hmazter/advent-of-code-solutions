@@ -6,6 +6,19 @@ const INC_INSTRUCTION = '/inc (\w)/';
 const DEC_INSTRUCTION = '/dec (\w)/';
 const JUMP_INSTRUCTION = '/jnz (\w) (-?\d+)/';
 
+function read($value)
+{
+    global $registers;
+
+    if (is_numeric($value)) {
+        // instruction includes the number
+        return $value;
+    } else {
+        // instructions contains the register to copy to register
+        return $registers[$value];
+    }
+}
+
 $instructions = file(__DIR__ . '/input.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 //$instructions = file(__DIR__ . '/example.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
@@ -23,13 +36,7 @@ while ($i < $instructionCount) {
     $instruction = $instructions[$i];
 
     if (preg_match(COPY_INSTRUCTION, $instruction, $match)) {
-        if (is_numeric($match[1])) {
-            // instruction includes the number to copy to register
-            $value = $match[1];
-        } else {
-            // instructions contains the register to copy to register
-            $value = $registers[$match[1]];
-        }
+        $value = read($match[1]);
         $targetRegister = $match[2];
         $registers[$targetRegister] = (int)$value;
 
@@ -44,14 +51,7 @@ while ($i < $instructionCount) {
     } elseif (preg_match(JUMP_INSTRUCTION, $instruction, $match)) {
         list(, $register, $distance) = $match;
 
-        if (is_numeric($register)) {
-            // instruction includes the number to check for non-zero
-            $registerValue = $register;
-        } else {
-            // instructions contains the register to check for non-zero
-            $registerValue = $registers[$register];
-        }
-
+        $registerValue = read($register);
         if ($registerValue !== 0) {
             $i += (int)$distance;
             continue;
