@@ -7,16 +7,16 @@ class Day4Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
-     * @dataProvider isValidPassPhrasePart1Provider
+     * @dataProvider isValidPassPhrase_part1
      * @param array $input
      * @param bool $valid
      */
-    public function isValidPassPhrasePart1(array $input, bool $valid)
+    public function isValidPassPhrase_part1(array $input, bool $valid)
     {
-        self::assertEquals($valid, isValidPassPhrasePart1($input));
+        self::assertEquals($valid, isValidPassPhrase($input, false));
     }
 
-    public function isValidPassPhrasePart1Provider()
+    public function isValidPassPhrase_part1Provider()
     {
         return [
             [['aa', 'bb', 'cc', 'dd', 'ee'], true],
@@ -27,37 +27,16 @@ class Day4Test extends \PHPUnit\Framework\TestCase
 
     /**
      * @test
-     * @dataProvider isAnagramProvider
-     * @param string $word1
-     * @param string $word2
-     * @param bool $isAnagram
-     */
-    public function isAnagram(string $word1, string $word2, bool $isAnagram)
-    {
-        self::assertEquals($isAnagram, isAnagram($word1, $word2));
-    }
-
-    public function isAnagramProvider()
-    {
-        return [
-            ['abcde', 'fghij', false],
-            ['abcde', 'ecdab', true],
-            ['iiii', 'oiii', false],
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider isValidPassPhrasePart2Provider
+     * @dataProvider isValidPassPhrase_part2Provider
      * @param array $input
      * @param bool $valid
      */
-    public function isValidPassPhrasePart2(array $input, bool $valid)
+    public function isValidPassPhrase_part2(array $input, bool $valid)
     {
-        self::assertEquals($valid, isValidPassPhrasePart2($input));
+        self::assertEquals($valid, isValidPassPhrase($input, true));
     }
 
-    public function isValidPassPhrasePart2Provider()
+    public function isValidPassPhrase_part2Provider()
     {
         return [
             [['abcde', 'fghij'], true],
@@ -65,6 +44,26 @@ class Day4Test extends \PHPUnit\Framework\TestCase
             [['a', 'ab', 'abc', 'abd', 'abf', 'abj'], true],
             [['iiii', 'oiii', 'ooii', 'oooi', 'oooo'], true],
             [['oiii', 'ioii', 'iioi', 'iiio'], false],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider str_sortProvider
+     * @param string $expected
+     * @param string $input
+     */
+    public function str_sort(string $expected, string $input)
+    {
+        self::assertEquals($expected, str_sort($input));
+    }
+
+    public function str_sortProvider()
+    {
+        return [
+            ['abc', 'acb'],
+            ['aaa', 'aaa'],
+            ['abc', 'cba'],
         ];
     }
 }

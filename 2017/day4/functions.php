@@ -1,47 +1,44 @@
 <?php
 declare(strict_types=1);
 
-function isValidPassPhrasePart1(array $words): bool
+/**
+ * Is a pass phrase valid?
+ *
+ * It is valid if each word only exists once.
+ * For part 2, each word is sorted before checking for uniqueness to find alla anagrams.
+ *
+ * @param array $words
+ * @param bool $includeAnagrams  should the word be sorted before checking for uniqueness to include anagrams?
+ * @return bool
+ */
+function isValidPassPhrase(array $words, bool $includeAnagrams): bool
 {
-    for ($i = 0; $i < count($words); $i++) {
-        for ($j = $i + 1; $j < count($words); $j++) {
-            if ($words[$i] === $words[$j]) {
-                return false;
-            }
+    $used = [];
+    foreach ($words as $word) {
+
+        if ($includeAnagrams) {
+            $word = str_sort($word);
         }
-    }
 
-    return true;
-}
-
-function isValidPassPhrasePart2(array $words): bool
-{
-    for ($i = 0; $i < count($words); $i++) {
-        for ($j = $i + 1; $j < count($words); $j++) {
-            if (isAnagram($words[$i], $words[$j])) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-function isAnagram(string $word1, string $word2): bool
-{
-    if (strlen($word1) !== strlen($word2)) {
-        return false;
-    }
-
-    for ($i = 0; $i < strlen($word1); $i++) {
-        $char = $word1[$i];
-        if (strpos($word2, $char) === false) {
-            // char from word 1 was not found in word2
+        if (isset($used[$word])) {
             return false;
-        } else {
-            $word2 = preg_replace("/$char/", '', $word2, 1);
         }
+
+        $used[$word] = true;
     }
 
     return true;
+}
+
+/**
+ * Sort the characters in a word alphabetically
+ *
+ * @param string $string
+ * @return string
+ */
+function str_sort(string $string): string
+{
+    $chars = str_split($string);
+    sort($chars);
+    return implode('', $chars);
 }

@@ -10,8 +10,8 @@ $part2 = 0;
 
 foreach ($rows as $row) {
     $words = explode(' ', $row);
-    $part1 += isValidPassPhrasePart1($words) ? 1 : 0;
-    $part2 += isValidPassPhrasePart2($words) ? 1 : 0;
+    $part1 += isValidPassPhrase($words, false) ? 1 : 0;
+    $part2 += isValidPassPhrase($words, true) ? 1 : 0;
 }
 
 echo "part1: $part1\n";
