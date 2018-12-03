@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/day2_functions.php';
+require_once __DIR__ . '/functions.php';
 
 use PHPUnit\Framework\TestCase;
 
