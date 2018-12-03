@@ -35,3 +35,36 @@ function toIntArray(array $array): array
         return (int)$value;
     }, $array);
 }
+
+/**
+ * @param float $startTime
+ */
+function printExecutionInfo(float $startTime): void
+{
+    $memory = formatBytes(memory_get_usage());
+    $peak = formatBytes(memory_get_peak_usage());
+    $duration = microtime(true) - $startTime;
+    $duration = number_format($duration, 4);
+
+    echo PHP_EOL;
+    echo "Using $memory memory, peaked at $peak and took $duration seconds to execute" . PHP_EOL;
+}
+
+/**
+ * @see https://stackoverflow.com/a/2510459/779652
+ * @param $bytes
+ * @param int $precision
+ * @return string
+ */
+function formatBytes($bytes, $precision = 2)
+{
+    $units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+    $bytes = max($bytes, 0);
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+    $pow = min($pow, count($units) - 1);
+
+    $bytes /= (1 << (10 * $pow));
+
+    return round($bytes, $precision) . ' ' . $units[$pow];
+}
