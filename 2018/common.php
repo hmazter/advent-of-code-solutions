@@ -68,3 +68,9 @@ function formatBytes($bytes, $precision = 2)
 
     return round($bytes, $precision) . ' ' . $units[$pow];
 }
+
+function dd(...$var)
+{
+    var_dump(...$var);
+    die;
+}
