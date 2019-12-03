@@ -8,20 +8,18 @@ function solve(array $path1, array $path2): array
 
     $manhattan_distance = PHP_INT_MAX;
     $wire_distance = PHP_INT_MAX;
-    foreach ($w1 as $position => $steps) {
-        if (isset($w2[$position])) {
-            // wire distance
-            $dist = $steps + $w2[$position];
-            if ($dist < $wire_distance) {
-                $wire_distance = $dist;
-            }
+    foreach (array_intersect_key($w1, $w2) as $position => $steps_w1) {
+        // wire distance
+        $dist = $steps_w1 + $w2[$position];
+        if ($dist < $wire_distance) {
+            $wire_distance = $dist;
+        }
 
-            //manhattan distance
-            [$x, $y] = explode(',', $position);
-            $dist = abs($x) + abs($y);
-            if ($dist < $manhattan_distance) {
-                $manhattan_distance = $dist;
-            }
+        //manhattan distance
+        [$x, $y] = explode(',', $position);
+        $dist = abs($x) + abs($y);
+        if ($dist < $manhattan_distance) {
+            $manhattan_distance = $dist;
         }
     }
 

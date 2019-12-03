@@ -10,7 +10,8 @@ $path2 = explode(',', $rows[1]);
 
 $startTime = microtime(true);
 
-echo 'Part 1: ' . solve($path1, $path2)['manhattan'] . PHP_EOL;
-echo 'Part 2: ' . solve($path1, $path2)['wire'] . PHP_EOL;
+$result = solve($path1, $path2);
+echo 'Part 1: ' . $result['manhattan'] . PHP_EOL;
+echo 'Part 2: ' . $result['wire'] . PHP_EOL;
 
 printExecutionInfo($startTime);
