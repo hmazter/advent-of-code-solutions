@@ -1,0 +1,21 @@
+{
+  "name": "hmazter/advent-of-code-solutions",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Kristoffer Högberg",
+      "email": "krihog@gmail.com"
+    }
+  ],
+  "autoload-dev": {
+    "files": [
+      "common.php"
+    ]
+  },
+  "require": {},
+  "require-dev": {
+    "symfony/var-dumper": "^5.0",
+    "phpunit/phpunit": "^8.4"
+  }
+}

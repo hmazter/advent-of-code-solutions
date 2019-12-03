@@ -41,13 +41,12 @@ function toIntArray(array $array): array
  */
 function printExecutionInfo(float $startTime): void
 {
-    $memory = formatBytes(memory_get_usage());
     $peak = formatBytes(memory_get_peak_usage());
     $duration = microtime(true) - $startTime;
     $duration = number_format($duration, 4);
 
     echo PHP_EOL;
-    echo "Using $memory memory, peaked at $peak and took $duration seconds to execute" . PHP_EOL;
+    echo "Peaked at $peak memory usage and took $duration seconds to execute" . PHP_EOL;
 }
 
 /**
@@ -67,10 +66,4 @@ function formatBytes($bytes, $precision = 2)
     $bytes /= (1 << (10 * $pow));
 
     return round($bytes, $precision) . ' ' . $units[$pow];
-}
-
-function dd(...$var)
-{
-    var_dump(...$var);
-    die;
 }
