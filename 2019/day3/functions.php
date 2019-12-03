@@ -6,22 +6,16 @@ function solve(array $path1, array $path2): array
     $w1 = get_wire_path_points($path1);
     $w2 = get_wire_path_points($path2);
 
-    $manhattan_distance = PHP_INT_MAX;
-    $wire_distance = PHP_INT_MAX;
-    foreach (array_intersect_key($w1, $w2) as $position => $steps_w1) {
-        // wire distance
-        $dist = $steps_w1 + $w2[$position];
-        if ($dist < $wire_distance) {
-            $wire_distance = $dist;
-        }
+    $intersect = array_intersect(array_keys($w1), array_keys($w2));
 
-        //manhattan distance
+    $manhattan_distance = min(array_map(function ($position) {
         [$x, $y] = explode(',', $position);
-        $dist = abs($x) + abs($y);
-        if ($dist < $manhattan_distance) {
-            $manhattan_distance = $dist;
-        }
-    }
+        return abs($x) + abs($y);
+    }, $intersect));
+
+    $wire_distance = min(array_map(function ($position) use($w1, $w2) {
+        return $w1[$position] + $w2[$position];
+    }, $intersect));
 
     return ['wire' => $wire_distance, 'manhattan' => $manhattan_distance];
 }
