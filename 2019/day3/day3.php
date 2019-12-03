@@ -1,0 +1,16 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../common.php';
+require_once __DIR__ . '/functions.php';
+
+$rows = readRows('input.txt');
+$path1 = explode(',', $rows[0]);
+$path2 = explode(',', $rows[1]);
+
+$startTime = microtime(true);
+
+echo 'Part 1: ' . solve($path1, $path2)['manhattan'] . PHP_EOL;
+echo 'Part 2: ' . solve($path1, $path2)['wire'] . PHP_EOL;
+
+printExecutionInfo($startTime);
