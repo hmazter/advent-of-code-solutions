@@ -13,9 +13,7 @@ function solve(array $path1, array $path2): array
         return abs($x) + abs($y);
     }, $intersect));
 
-    $wire_distance = min(array_map(function ($position) use($w1, $w2) {
-        return $w1[$position] + $w2[$position];
-    }, $intersect));
+    $wire_distance = min(array_map(fn ($position) => $w1[$position] + $w2[$position], $intersect));
 
     return ['wire' => $wire_distance, 'manhattan' => $manhattan_distance];
 }
