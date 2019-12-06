@@ -31,9 +31,7 @@ function readFileContent(string $filename): string
  */
 function toIntArray(array $array): array
 {
-    return array_map(function (string $value): int {
-        return (int)$value;
-    }, $array);
+    return array_map(fn (string $value): int => (int)$value, $array);
 }
 
 /**
