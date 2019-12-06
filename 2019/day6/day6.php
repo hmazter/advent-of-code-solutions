@@ -10,6 +10,6 @@ $startTime = microtime(true);
 $galaxy = build_galaxy($input);
 
 echo 'Part 1: ' . $galaxy->getTotalOrbitCount() . PHP_EOL;
-echo 'Part 2: ' . PHP_EOL;
+echo 'Part 2: ' . $galaxy->getDistanceBetween('YOU', 'SAN') . PHP_EOL;
 
 printExecutionInfo($startTime);

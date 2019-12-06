@@ -6,12 +6,26 @@ function build_galaxy(array $input): Galaxy
     // create a new Galaxy
     $galaxy = new Galaxy();
 
-    // Add Center of Mass (COM) without parent
-    $galaxy->addBody(new Body($galaxy, 'COM', null));
-
-    // Loop over all bodies and add them to the galaxy
+    // Loop over all bodies
+    // create them if not already exists in the galaxy and add them to the galaxy
+    // Connect the orbits
     foreach ($input as $item) {
-        $galaxy->addBody(Body::createFromItem($galaxy, $item));
+        [$parentName, $name] = explode(')', $item);
+
+        if (!$galaxy->hasBody($parentName)) {
+            $parent = $galaxy->addBody(new Body($parentName));
+        } else {
+            $parent = $galaxy->getBody($parentName);
+        }
+
+        if (!$galaxy->hasBody($name)) {
+            $body = $galaxy->addBody(new Body($name));
+        } else {
+            $body = $galaxy->getBody($name);
+        }
+
+        $body->setParent($parent);
+        $parent->addChild($body);
     }
 
     return $galaxy;
@@ -19,22 +33,16 @@ function build_galaxy(array $input): Galaxy
 
 class Body
 {
-    private Galaxy $galaxy;
     private string $name;
-    private ?string $parentName;
-    private ?int $orbitCount = null;
+    private ?Body $parent = null;
+    private array $children = [];
+    private int $orbitCountFromStartBody = 0;
 
-    public function __construct(Galaxy $galaxy, string $name, ?string $parentName)
+    public bool $visited = false;
+
+    public function __construct(string $name)
     {
-        $this->galaxy = $galaxy;
         $this->name = $name;
-        $this->parentName = $parentName;
-    }
-
-    public static function createFromItem(Galaxy $galaxy, string $item): self
-    {
-        [$parentName, $name] = explode(')', $item);
-        return new self($galaxy, $name, $parentName);
     }
 
     public function getName(): string
@@ -42,18 +50,45 @@ class Body
         return $this->name;
     }
 
-    public function getOrbitCount(): int
+    public function getOrbitCountFromCenter(): int
     {
-        if ($this->parentName === null) {
+        if ($this->parent === null) {
             return 0;
         }
 
-        if ($this->orbitCount === null) {
-            // only calculate this bodies count once
-            $this->orbitCount = $this->galaxy->getBody($this->parentName)->getOrbitCount() + 1;
-        }
+        return $this->parent->getOrbitCountFromCenter() + 1;
+    }
 
-        return $this->orbitCount;
+    public function getOrbitCountFromStartBody(): int
+    {
+        return $this->orbitCountFromStartBody;
+    }
+
+    public function setOrbitCountFromStartBody(int $orbitCount): void
+    {
+        $this->orbitCountFromStartBody = $orbitCount;
+    }
+
+    public function setParent(Body $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    public function addChild(Body $body): void
+    {
+        $this->children[] = $body;
+    }
+
+    /**
+     * @return Body[]
+     */
+    public function getOrbits(): array
+    {
+        $orbits = $this->children;
+        if ($this->parent) {
+            $orbits[] = $this->parent;
+        }
+        return $orbits;
     }
 }
 
@@ -62,9 +97,15 @@ class Galaxy
     /** @var Body[] */
     private array $bodies = [];
 
-    public function addBody(Body $body)
+    public function addBody(Body $body): Body
     {
         $this->bodies[$body->getName()] = $body;
+        return $body;
+    }
+
+    public function hasBody(string $name): bool
+    {
+        return isset($this->bodies[$name]);
     }
 
     public function getBody(string $name): Body
@@ -77,9 +118,52 @@ class Galaxy
         $total = 0;
 
         foreach ($this->bodies as $body) {
-            $total += $body->getOrbitCount();
+            $total += $body->getOrbitCountFromCenter();
         }
 
         return $total;
+    }
+
+    public function getDistanceBetween(string $start, string $target): int
+    {
+        // the queue with bodies to visit
+        $queue = new SplQueue();
+
+        // add all orbits from the start node
+        $body = $this->getBody($start);
+        $body->visited = true;
+        foreach ($body->getOrbits() as $orbit) {
+            $orbit->setOrbitCountFromStartBody(1);
+            $queue->enqueue($orbit);
+        }
+
+        while ($queue->count() > 0) {
+            /** @var Body $body */
+            $body = $queue->dequeue();
+
+            if ($body->visited) {
+                // we have been here before
+                // this is not the target
+                // and all its orbits has already been added to the queue
+                continue;
+            }
+
+            if ($body->getName() === $target) {
+                // we found the target
+                // we don't count the orbits for Start and Target themselves, therefore -2
+                return $body->getOrbitCountFromStartBody() - 2;
+            }
+
+            // mark body as visited
+            $body->visited = true;
+
+            // add all orbits from here to queue
+            foreach ($body->getOrbits() as $b) {
+                $b->setOrbitCountFromStartBody($body->getOrbitCountFromStartBody() + 1);
+                $queue->enqueue($b);
+            }
+        }
+
+        throw new RuntimeException('Did not find target body in this galaxy');
     }
 }
