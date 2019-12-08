@@ -14,7 +14,8 @@
     ]
   },
   "require": {
-    "illuminate/support": "^6.6"
+    "illuminate/support": "^6.6",
+    "intervention/image": "^2.5"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.0",

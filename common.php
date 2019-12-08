@@ -26,8 +26,8 @@ function readFileContent(string $filename): string
 /**
  * Cast each element in an array to int
  *
- * @param array|int[] $array
- * @return array
+ * @param array $array
+ * @return array|int[]
  */
 function toIntArray(array $array): array
 {
