@@ -15,6 +15,6 @@ $moons = [
 $startTime = microtime(true);
 
 echo 'Part 1: ' . solve_part1($moons, 1000) . PHP_EOL;
-//echo 'Part 2: ' . solve_part2($moons) . PHP_EOL;
+echo 'Part 2: ' . solve_part2($moons) . PHP_EOL;
 
 printExecutionInfo($startTime);

@@ -35,20 +35,27 @@ function solve_part1(array $moons, int $steps): int
  */
 function solve_part2(array $moons): int
 {
-    //print_step($moons, 0);
+    $steps = [];
+    foreach (['x', 'y', 'z'] as $dimension) {
+        $steps[] = calculate_steps_for_dimension($moons, $dimension);
+    }
+
+    return math_lcmm($steps);
+}
+
+/**
+ * @param array|Moon[] $moons
+ * @param string $dimension
+ * @return int
+ */
+function calculate_steps_for_dimension(array $moons, string $dimension)
+{
     $history = [];
-    $history[generate_hash($moons)] = true;
+    $history[generate_hash($moons, $dimension)] = true;
 
     $i = 0;
     while (true) {
         $i++;
-
-//        if ($i % 1_000_000 === 0) {
-//            echo 'step ' . ($i / 1_000_000) . ' M' . PHP_EOL;
-//        }
-        if ($i === 1_000_000) {
-            return $i;
-        }
 
         foreach ($moons as $moon) {
             $moon->calculateVelocity($moons);
@@ -60,7 +67,7 @@ function solve_part2(array $moons): int
 
         // calculate the new history hash and see if we have had it before
         // in that case return the number of steps it took
-        $hash = generate_hash($moons);
+        $hash = generate_hash($moons, $dimension);
         if (isset($history[$hash])) {
             return $i;
         }
@@ -80,9 +87,14 @@ function print_step(array $moons, int $step)
     echo PHP_EOL;
 }
 
-function generate_hash(array $moons)
+/**
+ * @param array|Moon[] $moons
+ * @param string $dimension
+ * @return string
+ */
+function generate_hash(array $moons, string $dimension)
 {
-    return md5($moons[0].$moons[1].$moons[2].$moons[3]);
+    return $moons[0]->getKey($dimension) . $moons[1]->getKey($dimension) . $moons[2]->getKey($dimension) . $moons[3]->getKey($dimension);
 }
 
 class Moon
@@ -145,14 +157,61 @@ class Moon
         return $this->getPotentialEnergy() * $this->getKineticEnergy();
     }
 
-    public function getKey(): string
+    public function getKey(string $dimension)
     {
-        return "$this->pos_x,$this->pos_y,$this->pos_z,$this->vel_x,$this->vel_y,$this->vel_z";
+        switch ($dimension) {
+            case 'x':
+                return "$this->pos_x,$this->vel_x";
+            case 'y':
+                return "$this->pos_y,$this->vel_y";
+            case 'z':
+                return "$this->pos_z,$this->vel_z";
+        }
+
+        throw new RuntimeException("Invalid dimension: $dimension");
     }
 
     public function __toString()
     {
-//        return "$this->pos_x,$this->pos_y,$this->pos_z,$this->vel_x,$this->vel_y,$this->vel_z";
         return "pos=<x=$this->pos_x, y=$this->pos_y, z=$this->pos_z>, vel=<x=$this->vel_x, y=$this->vel_y, z=$this->vel_z>";
+    }
+}
+
+// https://stackoverflow.com/q/12412782/1066234
+function math_gcd(int $a, int $b)
+{
+    $a = abs($a);
+    $b = abs($b);
+    if ($a < $b) {
+        [$b, $a] = [$a, $b];
+    }
+    if ($b == 0) {
+        return $a;
+    }
+    $r = $a % $b;
+    while ($r > 0) {
+        $a = $b;
+        $b = $r;
+        $r = $a % $b;
+    }
+    return $b;
+}
+
+function math_lcm($a, $b)
+{
+    return ($a * $b / math_gcd($a, $b));
+}
+
+// https://stackoverflow.com/a/2641293/1066234
+function math_lcmm($args)
+{
+    // Recursively iterate through pairs of arguments
+    // i.e. lcm(args[0], lcm(args[1], lcm(args[2], args[3])))
+
+    if (count($args) == 2) {
+        return math_lcm($args[0], $args[1]);
+    } else {
+        $arg0 = array_shift($args);
+        return math_lcm($arg0, math_lcmm($args));
     }
 }
