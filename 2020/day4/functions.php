@@ -8,12 +8,7 @@ function get_passports(array $input): array
     foreach ($input as $row) {
         if ($row === '') {
             // we got to a empty line, i.e the end of previous passport chunk
-            $passport = [];
-            foreach ($chunk as $item) {
-                [$key, $value] = explode(':', $item);
-                $passport[$key] = $value;
-            }
-            $passports[] = $passport;
+            $passports[] = process_chunk($chunk);
             $chunk = [];
 
             continue;
@@ -22,14 +17,20 @@ function get_passports(array $input): array
         $chunk = [...$chunk, ...explode(' ', $row)];
     }
 
+    // process the last chunk
+    $passports[] = process_chunk($chunk);
+
+    return $passports;
+}
+
+function process_chunk(array $chunk): array
+{
     $passport = [];
     foreach ($chunk as $item) {
         [$key, $value] = explode(':', $item);
         $passport[$key] = $value;
     }
-    $passports[] = $passport;
-
-    return $passports;
+    return $passport;
 }
 
 function is_valid_passport(array $passport, bool $validate): bool
