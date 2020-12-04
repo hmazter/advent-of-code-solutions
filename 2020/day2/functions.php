@@ -3,24 +3,20 @@ declare(strict_types=1);
 
 function count_valid_passwords_part_1($rows): int
 {
-    $count = 0;
-    foreach ($rows as $row) {
-        if (is_valid_password_part_1($row)) {
-            $count++;
-        }
-    }
-    return $count;
+    return count(
+        array_filter(
+            array_map('is_valid_password_part_1', $rows)
+        )
+    );
 }
 
 function count_valid_passwords_part_2($rows): int
 {
-    $count = 0;
-    foreach ($rows as $row) {
-        if (is_valid_password_part_2($row)) {
-            $count++;
-        }
-    }
-    return $count;
+    return count(
+        array_filter(
+            array_map('is_valid_password_part_2', $rows)
+        )
+    );
 }
 
 function is_valid_password_part_1(string $row): bool
@@ -35,7 +31,7 @@ function is_valid_password_part_2(string $row): bool
 {
     [, $pos1, $pos2, $char, $password] = parse_row($row);
 
-    return ($password[$pos1 - 1] === $char || $password[$pos2 - 1] === $char) && $password[$pos1 - 1] !== $password[$pos2 - 1];
+    return ($password[$pos1 - 1] === $char XOR $password[$pos2 - 1] === $char);
 }
 
 function parse_row(string $row): array
