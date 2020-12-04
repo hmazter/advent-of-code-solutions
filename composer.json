@@ -15,7 +15,8 @@
   },
   "require": {
     "illuminate/support": "^6.6",
-    "intervention/image": "^2.5"
+    "intervention/image": "^2.5",
+    "symfony/polyfill-php80": "^1.20"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.0",
