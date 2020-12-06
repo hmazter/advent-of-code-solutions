@@ -13,7 +13,7 @@ class Day4Test extends TestCase
     {
         parent::setUp();
 
-        $this->passports = get_passports(file(__DIR__ . '/test.txt', FILE_IGNORE_NEW_LINES));
+        $this->passports = get_passports(readFileContent(__DIR__ . '/test.txt'));
     }
 
     public function test_get_passports(): void

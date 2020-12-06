@@ -1,36 +1,23 @@
 <?php
 declare(strict_types=1);
 
-function get_passports(array $input): array
+function get_passports(string $input): array
 {
-    $passports = [];
-    $chunk = [];
-    foreach ($input as $row) {
-        if ($row === '') {
-            // we got to a empty line, i.e the end of previous passport chunk
-            $passports[] = process_chunk($chunk);
-            $chunk = [];
-
-            continue;
-        }
-
-        $chunk = [...$chunk, ...explode(' ', $row)];
-    }
-
-    // process the last chunk
-    $passports[] = process_chunk($chunk);
-
-    return $passports;
-}
-
-function process_chunk(array $chunk): array
-{
-    $passport = [];
-    foreach ($chunk as $item) {
-        [$key, $value] = explode(':', $item);
-        $passport[$key] = $value;
-    }
-    return $passport;
+    // Split each passport "chunk"
+    return collect(explode("\n\n", $input))
+        // replace newline separator in passport chunks with the common space separator
+        ->map(fn($passport) => str_replace("\n", ' ', $passport))
+        ->map(function ($passport) {
+            // split passport chunk into each field
+            return collect(explode(' ', $passport))
+                // map the passport fields as a key-value array
+                ->mapWithKeys(function ($item) {
+                    [$key, $value] = explode(':', $item);
+                    return [$key => $value];
+                })
+                ->all();
+        })
+        ->all();
 }
 
 function is_valid_passport(array $passport, bool $validate): bool
