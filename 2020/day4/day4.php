@@ -4,7 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/functions.php';
 
-$input = readFileContent('input.txt');
+$input = readFileContent(__DIR__ . '/input.txt');
 $passports = get_passports($input);
 
 $startTime = microtime(true);
