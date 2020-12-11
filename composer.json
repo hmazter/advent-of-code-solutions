@@ -14,12 +14,15 @@
     ]
   },
   "require": {
+    "php": "^8.0",
     "illuminate/support": "^6.6",
     "intervention/image": "^2.5",
-    "symfony/polyfill-php80": "^1.20",
     "phpunit/phpunit": "^9.5"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.0"
+  },
+  "config": {
+    "sort-packages": true
   }
 }
