@@ -65,3 +65,7 @@ function formatBytes($bytes, $precision = 2)
 
     return round($bytes, $precision) . ' ' . $units[$pow];
 }
+
+function transpose($array): array {
+    return array_map(null, ...$array);
+}
