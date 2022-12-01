@@ -1,4 +1,4 @@
-# Advent of code solutions 2015-2021
+# Advent of code solutions 2015-2022
 
 ![](https://img.shields.io/badge/2015%20⭐-46-yellow)
 ![](https://img.shields.io/badge/2016%20⭐-28-yellow)
