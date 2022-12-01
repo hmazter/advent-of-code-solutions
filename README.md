@@ -7,6 +7,7 @@
 ![](https://img.shields.io/badge/2019%20⭐-16-yellow)
 ![](https://img.shields.io/badge/2020%20⭐-23-yellow)
 ![](https://img.shields.io/badge/2021%20⭐-16-yellow)
+![](https://img.shields.io/badge/2022%20⭐-2-yellow)
 
 My solutions to advent of code, https://adventofcode.com/
 
