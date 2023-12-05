@@ -12,7 +12,7 @@ class Day1Test extends TestCase
      */
     public function test_get_calibration_value($input, $expeccted)
     {
-        $value = get_calibration_value($input);
+        $value = get_calibration_value($input, false);
 
         self::assertEquals($expeccted, $value);
     }
@@ -29,7 +29,7 @@ class Day1Test extends TestCase
      */
     public function test_get_calibration_value_spelled_out($input, $expeccted)
     {
-        $value = get_calibration_value_spelled_out($input, true);
+        $value = get_calibration_value($input, true);
 
         self::assertEquals($expeccted, $value);
     }
